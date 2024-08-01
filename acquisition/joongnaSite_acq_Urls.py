@@ -4,10 +4,11 @@ import pandas as pd
 import requests
 import time
 from bs4 import BeautifulSoup
+import sys
 
 def get_postUrls(item):
     headers = {"User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"}
-    engine = create_engine("mysql+pymysql://admin:12312312@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
+    engine = create_engine(f"mysql+pymysql://{sys.argv[1]}:{sys.argv[2]}@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
     engine.connect()
 
     
@@ -46,7 +47,10 @@ def get_postUrls(item):
         start_price += 500000
 
 if __name__ == "__main__" :
-    item = ["iPhone14", "%EC%95%84%EC%9D%B4%ED%8F%B014"]
+    item = ["iPhone13", "%EC%95%84%EC%9D%B4%ED%8F%B013"]
+    if len(sys.argv) != 3:
+        print("usage: python3 ~.py ID PW")
+        sys.exit(1)
 
     get_postUrls(item)
 

@@ -11,6 +11,8 @@ import pandas as pd
 import time
 import pymysql
 from sqlalchemy import create_engine
+import sys
+
 
 
 # Chrome driver 옵션 설정
@@ -24,10 +26,8 @@ chrome_options.add_argument("--log-level=3") # 로그 수준을 낮춰 warning m
 def get_postInfo(Urls: pd.DataFrame):
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    engine = create_engine("mysql+pymysql://admin:12312312@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
-    engine.connect()
 
-    i = 2400
+    i = 3291
     while i < len(Urls):
         try:
             url = "https://web.joongna.com/product/" + str(Urls.iloc[i, 1])
@@ -72,7 +72,7 @@ def get_postInfo(Urls: pd.DataFrame):
                 status = 0
             sample = pd.DataFrame([{'id': Urls.iloc[i, 0] ,'title': title, 'context':context, 'price':price, 'upload_date':upload_date, 'location':location, 'status':status, 'img_url':imgUrl}])
             
-            sample.to_sql(name="iPhone14", con=engine, if_exists='append', index=False)
+            sample.to_sql(name="Post_iPhone14", con=engine, if_exists='append', index=False)
 
             # post_info가 정상적으로 추출됨을 알림
             print(i, flush=True)
@@ -83,8 +83,12 @@ def get_postInfo(Urls: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    db = pymysql.connect(host='ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com', user='admin', passwd='12312312', db='joonggoinfo')
-    cursor = db.cursor()
-    Urls = pd.read_sql('SELECT * FROM Urls', db)
+    if len(sys.argv) != 3:
+        print("usage: python3 ~.py ID PW")
+        sys.exit(1)
+
+    engine = create_engine(f"mysql+pymysql://{sys.argv[1]}:{sys.argv[2]}@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
+    engine.connect()
+    Urls = pd.read_sql('SELECT * FROM Urls', engine)
 
     get_postInfo(Urls)
