@@ -174,7 +174,7 @@ if __name__ == "__main__":
    
     spark = SparkSession.builder \
     .appName("spark-sql") \
-    .config("spark.driver.extraClassPath", "/home/boui/Desktop/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0.jar") \
+    .config("spark.driver.extraClassPath", "~/mysql-connector-j-9.0.0/mysql-connector-j-9.0.0.jar") \
     .getOrCreate()
 
     ip = 'ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com'

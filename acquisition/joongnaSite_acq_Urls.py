@@ -21,7 +21,7 @@ def get_postUrls(item:list, user, passwd):
         for page_num in range(1,126):
             try:
                 
-                url = f"https://web.joongna.com/search/{item[1]}?page={page_num}&saleYn=SALE_Y&sort=RECENT_SORT&minPrice={start_price}&maxPrice={start_price+500000}&productFilterType=APP"
+                url = f"https://web.joongna.com/search/{item[1]}?page={page_num}&saleYn=SALE_Y&sort=RECENT_SORT&minPrice={start_price}&maxPrice={start_price+499999}&productFilterType=APP"
                 res = requests.get(url, headers=headers)
                 res_body = res.text
                 soup = BeautifulSoup(res_body, 'html.parser')
@@ -32,7 +32,7 @@ def get_postUrls(item:list, user, passwd):
                 for post in post_section:
                     try:
                         anchor = post.find('a')['href']
-                        df2 = pd.DataFrame([[anchor[9:], 'JoongnaSite', item[0]]], columns=['num', 'site_name', 'keyword'])
+                        df2 = pd.DataFrame([[int(anchor[9:]), 'JoongnaSite', item[0]]], columns=['num', 'site_name', 'keyword'])
                         df1 = pd.concat([df1, df2], ignore_index=True)
                     except:
                         continue
