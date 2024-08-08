@@ -33,15 +33,14 @@ def get_postUrls(item:list, user, passwd):
                     try:
                         anchor = post.find('a')['href']
                         df2 = pd.DataFrame([[anchor[9:], 'JoongnaSite', item[0]]], columns=['num', 'site_name', 'keyword'])
-                        df2.to_sql(name = 'urls', con=engine, if_exists='append', index=False)
-                        # df1 = pd.concat([df1, df2], ignore_index=True)
+                        df1 = pd.concat([df1, df2], ignore_index=True)
                     except:
                         continue
                 print('.', end='', flush=True)
             except:
                 continue
         print('inserted')
-        # df1.to_sql(name = 'urls', con=engine, if_exists='append', index=False)
+        df1.to_sql(name = 'Urls', con=engine, if_exists='append', index=False)
         start_price += 500000
 
 if __name__ == "__main__" :

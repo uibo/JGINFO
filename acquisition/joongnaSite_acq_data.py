@@ -15,7 +15,7 @@ import sys
 def get_postInfo(user, passwd):
     engine = create_engine(f"mysql+pymysql://{user}:{passwd}@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
     engine.connect()
-    urls = pd.read_sql('SELECT * FROM urls', engine)
+    Urls = pd.read_sql('SELECT * FROM Urls', engine)
 
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # GUI 없이 실행
@@ -27,9 +27,9 @@ def get_postInfo(user, passwd):
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     i = 0
-    while i < len(urls):
+    while i < len(Urls):
         try:
-            url = "https://web.joongna.com/product/" + str(urls.loc[i, 'num'])
+            url = "https://web.joongna.com/product/" + str(Urls.loc[i, 'num'])
             driver.get(url)
             # article element 로드 될때까지 기다림
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "article")))
@@ -68,10 +68,9 @@ def get_postInfo(user, passwd):
                     status = False
             except:
                 status = 0
-            sample = pd.DataFrame([{'id': urls.loc[i, 'id'] ,'title': title, 'content':content, 'price':price, 'upload_date':upload_date, 'location':location, 'status':status, 'img_url':img_url}])
+            sample = pd.DataFrame([{'id': Urls.loc[i, 'id'] ,'title': title, 'content':content, 'price':price, 'upload_date':upload_date, 'location':location, 'status':status, 'img_url':img_url}])
             
             sample.to_sql(name="post_iPhone14", con=engine, if_exists='append', index=False)
-
             # post_info가 정상적으로 추출됨을 알림
             print(i, flush=True)
         finally:
