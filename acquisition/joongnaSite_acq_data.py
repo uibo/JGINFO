@@ -70,7 +70,7 @@ def get_postInfo(user, passwd):
                 status = 0
             sample = pd.DataFrame([{'id': Urls.loc[i, 'id'] ,'title': title, 'content':content, 'price':price, 'upload_date':upload_date, 'location':location, 'status':status, 'img_url':img_url}])
             
-            sample.to_sql(name="post_iPhone14", con=engine, if_exists='append', index=False)
+            sample.to_sql(name="Post_iPhone14", con=engine, if_exists='append', index=False)
             # post_info가 정상적으로 추출됨을 알림
             print(i, flush=True)
         finally:
