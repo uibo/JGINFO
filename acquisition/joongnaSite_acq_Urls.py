@@ -6,9 +6,9 @@ import time
 from bs4 import BeautifulSoup
 import sys
 
-def get_postUrls(item):
+def get_postUrls(item:list, user, passwd):
     headers = {"User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"}
-    engine = create_engine(f"mysql+pymysql://{sys.argv[1]}:{sys.argv[2]}@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
+    engine = create_engine(f"mysql+pymysql://{user}:{passwd}@ls-0417629e59c83e2cfae4e2aac001b7eee2799e0e.cxiwwsmmq2ua.ap-northeast-2.rds.amazonaws.com/joonggoinfo")
     engine.connect()
 
     
@@ -32,26 +32,26 @@ def get_postUrls(item):
                 for post in post_section:
                     try:
                         anchor = post.find('a')['href']
-                        df2 = pd.DataFrame([[anchor[9:], 'JoongnaSite',item[0]]], columns=['num', 'site_name', 'keyword'])
-                        df1 = pd.concat([df1, df2], ignore_index=True)
+                        df2 = pd.DataFrame([[anchor[9:], 'JoongnaSite', item[0]]], columns=['num', 'site_name', 'keyword'])
+                        df2.to_sql(name = 'urls', con=engine, if_exists='append', index=False)
+                        # df1 = pd.concat([df1, df2], ignore_index=True)
                     except:
                         continue
                 print('.', end='', flush=True)
             except:
-                print('error2', end='')
-                time.sleep(1)
                 continue
         print('inserted')
-        df1.to_sql(name = 'Urls', con=engine, if_exists='append', index=False)
-        # df1.to_csv('test.csv', mode='a+' ,index=False)
+        # df1.to_sql(name = 'urls', con=engine, if_exists='append', index=False)
         start_price += 500000
 
 if __name__ == "__main__" :
-    item = ["iPhone13", "%EC%95%84%EC%9D%B4%ED%8F%B013"]
+    item = ["iPhone14", "%EC%95%84%EC%9D%B4%ED%8F%B014"]
     if len(sys.argv) != 3:
-        print("usage: python3 ~.py ID PW")
+        print("usage: python3 ~.py user passwd")
         sys.exit(1)
 
-    get_postUrls(item)
+    user = sys.argv[1]
+    passwd = sys.argv[2]
+    get_postUrls(item, user, passwd)
 
    
